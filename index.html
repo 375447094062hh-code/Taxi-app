@@ -109,7 +109,7 @@
 
     .weekend-badge-notice { background: rgba(250, 204, 21, 0.1); border: 1px solid var(--accent-yellow); border-radius: 12px; padding: 10px 14px; margin-bottom: 12px; font-size: 12px; color: var(--accent-yellow); display: flex; align-items: center; gap: 8px; font-weight: 600; }
 
-    .summary-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; margin-bottom: 12px; text-align: left; }
+    .summary-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
     .summary-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; color: var(--text-muted); }
     .summary-row span:last-child { color: var(--text-main); font-weight: 600; }
 
@@ -126,7 +126,6 @@
 
     .rating-stars { display: flex; justify-content: center; gap: 8px; font-size: 24px; color: var(--text-muted); margin: 12px 0; cursor: pointer; }
     .rating-stars .fa-star.active { color: var(--accent-yellow); }
-    .error { color: var(--red); font-weight: bold; }
   </style>
 </head>
 <body>
@@ -145,7 +144,7 @@
 
     <div class="viewport">
 
-      <!-- ЭКРАН 1: Главное меню (Пассажир) -->
+      <!-- ЭКРАН 1: Главное меню -->
       <div class="screen active" id="screen1">
         <div class="logo-card">
           <div class="logo-icon"><i class="fa-solid fa-taxi"></i></div>
@@ -155,7 +154,6 @@
         <button class="btn-primary" onclick="startOrderProcess()" style="margin-bottom: 16px;"><i class="fa-solid fa-location-arrow"></i> Вызвать такси</button>
         <div class="menu-list">
           <div class="menu-item" onclick="openTariffsInfoOnly()"><div class="menu-item-left"><i class="fa-solid fa-car" style="color: var(--accent-yellow);"></i> Тарифы и авто</div><i class="fa-solid fa-chevron-right" style="color: var(--text-muted);"></i></div>
-          <!-- Кнопка перехода в кабинет водителя (если нужно вручную переключиться) -->
           <div class="menu-item" onclick="goTo(12)"><div class="menu-item-left"><i class="fa-solid fa-id-card" style="color: var(--accent-yellow);"></i> Режим Водителя</div><i class="fa-solid fa-chevron-right" style="color: var(--text-muted);"></i></div>
         </div>
       </div>
@@ -246,14 +244,15 @@
             <span id="comfBaseText">Посадка: 4.00 BYN</span>
             <span id="comfKmText">1-5км: 1.10 | 5-10км: 1.50 | >10км: 2.60 BYN/км</span>
           </div>
-          <div class="tariff-desc">Просторные авто с кондиционером (Toyota Corolla, VW Polo).</div>
+          <div class="tariff-desc">Просторные авто с кондиционером (Toyota Corolla, VW Polo). Высокий рейтинг водителей.</div>
         </div>
 
         <div class="tariff-info-box">
           <div class="tariff-info-title"><i class="fa-solid fa-circle-info"></i> Условия обслуживания</div>
           <ul class="tariff-info-list">
-            <li><strong>Зональный тариф:</strong> 1-5 км, 5-10 км, >10 км.</li>
+            <li><strong>Зональный тариф:</strong> 1-5 км, 5-10 км, >10 км (плавный рост стоимости).</li>
             <li><strong>Тариф выходного дня:</strong> Пт, Сб, Вс (+1.00 BYN к посадке).</li>
+            <li><strong>Бесплатное ожидание:</strong> 2 минуты с момента подачи.</li>
           </ul>
         </div>
 
@@ -278,8 +277,9 @@
           <div class="summary-row"><span>Куда:</span><span id="sumB"></span></div>
           <div class="summary-row"><span>Подача:</span><span id="sumDateTime" style="color:var(--accent-yellow);"></span></div>
           <div class="summary-row"><span>Тариф:</span><span id="sumTariff"></span></div>
-          <div class="summary-row" id="sumWeekendRow" style="display:none;"><span>День недели:</span><span style="color:var(--accent-yellow);">Выходной (+1.00 BYN)</span></div>
+          <div class="summary-row" id="sumWeekendRow" style="display:none;"><span>День недели:</span><span style="color:var(--accent-yellow);">Выходной (+1.00 BYN посадка)</span></div>
           <div class="summary-row" id="sumChildSeatRow" style="display:none;"><span>Опции:</span><span style="color:var(--accent-yellow);">Детское кресло (+1.00 BYN)</span></div>
+          <div class="summary-row"><span>Условия:</span><span id="sumRates" style="font-size:11px;"></span></div>
           <div class="summary-row" style="margin-top:10px; border-top:1px solid var(--card-border); padding-top:8px;">
             <span>Стоимость:</span><span style="color:var(--accent-yellow); font-weight:700;">По счетчику водителя</span>
           </div>
@@ -297,11 +297,11 @@
 
       <!-- ЭКРАН 9: Водитель найден -->
       <div class="screen" id="screen9" style="text-align:center;">
-        <div class="summary-card" style="text-align: center;">
+        <div class="summary-card">
           <div class="logo-icon" style="border-radius:50%;"><i class="fa-solid fa-user-check"></i></div>
-          <h3 id="foundDriverName">Александр Иванов</h3>
-          <p style="color:var(--accent-yellow); font-size:13px; margin:4px 0;" id="foundDriverRating">★ 4.95</p>
-          <p style="color:var(--text-muted); font-size:12px;" id="foundDriverCar">Toyota Corolla • 3-TAP-1234</p>
+          <h3>Александр Иванов</h3>
+          <p style="color:var(--accent-yellow); font-size:13px; margin:4px 0;">★ 4.95 (142 отзыва)</p>
+          <p style="color:var(--text-muted); font-size:12px;">Toyota Corolla • 3-TAP-1234</p>
         </div>
         <button class="btn-primary" onclick="goTo(10)">Смотреть статус</button>
       </div>
@@ -318,25 +318,22 @@
           </div>
 
           <div class="summary-row" style="margin-top:10px;"><span>Время подачи:</span><span style="color:#fff;" id="clientScheduledDisplay">Сейчас</span></div>
+          <div class="summary-row" id="clientWeekendDisplay" style="display:none;"><span>Тариф:</span><span style="color:var(--accent-yellow);">Выходной день (+1 BYN)</span></div>
+          <div class="summary-row" id="clientChildSeatDisplay" style="display:none;"><span>Опции:</span><span style="color:var(--accent-yellow);">Детское кресло</span></div>
           <div class="summary-row"><span>Пробег:</span><span style="color:#fff;" id="clientKmDisplay">Поездка идет...</span></div>
           <div class="summary-row"><span>Стоимость:</span><span style="color:var(--accent-yellow); font-weight:700;" id="clientPriceDisplay">Считает водитель</span></div>
         </div>
         <button class="btn-primary" onclick="goTo(12)">Перейти в Кабинет Водителя</button>
       </div>
 
-      <!-- ЭКРАН 12: Кабинет Водителя (Интегрирован бэкенд с Render + ваши ID) -->
+      <!-- ЭКРАН 12: Водитель -->
       <div class="screen" id="screen12">
         <div class="summary-card" style="margin-bottom:8px;">
-          <div style="font-size: 13px; font-weight: 700; color: var(--accent-yellow); margin-bottom: 8px;">
-            <i class="fa-solid fa-id-card"></i> Данные водителя из базы
-          </div>
-          <div id="driver-info">Загрузка данных водителя с сервера...</div>
-        </div>
-
-        <div class="summary-card" style="margin-bottom:8px;">
-          <div style="font-size: 11px; color: var(--text-muted);">Активный заказ</div>
+          <div style="font-size: 11px; color: var(--text-muted);">Активный заказ #1042</div>
           <div style="font-size: 14px; font-weight: 700; margin-top:2px;" id="driverOrderAddresses">Советская → Строителей</div>
           <div style="font-size: 12px; color: var(--accent-yellow); margin-top:4px;" id="driverScheduledTime">Подача: Ближайшее время</div>
+          <div style="font-size: 12px; color: var(--accent-yellow); margin-top:2px; display:none;" id="driverWeekendBadge"><i class="fa-solid fa-calendar-star"></i> Тариф выходного дня (+1.00 BYN)</div>
+          <div style="font-size: 12px; color: var(--accent-yellow); margin-top:2px; display:none;" id="driverChildSeatBadge"><i class="fa-solid fa-child-reaching"></i> С детским креслом (+1.00 BYN)</div>
           
           <div style="margin-top:10px; border-top:1px solid var(--card-border); padding-top:8px;">
             <label class="label-text">Пробег по одометру (км):</label>
@@ -366,18 +363,22 @@
           <button class="btn-primary" id="btnStartTrip" style="display:none; background: var(--green); color:#fff; padding: 12px;" onclick="startTripAndSaveRemainingTime()">
             <i class="fa-solid fa-play"></i> Поехали (Выбрать Точку Б)
           </button>
+          
+          <button class="btn-primary" id="btnTransitWaiting" style="display:none; background: var(--orange); color:#fff; padding: 12px;" onclick="toggleTransitWaiting()">
+            <i class="fa-solid fa-pause"></i> Остановка в пути
+          </button>
 
           <button class="btn-primary" id="btnFinishTrip" style="display:none; background: var(--red); color:#fff; padding: 12px;" onclick="finishTrip()">
             <i class="fa-solid fa-flag-checkered"></i> Завершить поездку
           </button>
 
-          <button class="btn-primary" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-main); padding: 10px;" onclick="goTo(1)">В главное меню</button>
+          <button class="btn-primary" style="background: transparent; border: 1px solid var(--card-border); color: var(--text-main); padding: 10px;" onclick="goTo(10)">Вид пассажира</button>
         </div>
       </div>
 
       <!-- ЭКРАН 13: Поездка завершена -->
       <div class="screen" id="screen13" style="text-align: center;">
-        <div class="summary-card" style="margin-top: 10px;">
+        <div class="summary-card" style="margin-top: 10px; text-align: left;">
           <div style="text-align: center; margin-bottom: 12px;">
             <span class="status-badge status-done">Поездка завершена</span>
             <div style="font-size: 18px; font-weight: 800; color: var(--accent-yellow); margin-top: 4px;" id="finalPriceDisplay">0.00 BYN</div>
@@ -389,6 +390,7 @@
 
         <div class="summary-card">
           <div style="font-size: 13px; font-weight: 700; margin-bottom: 4px;">Оцените поездку</div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Это поможет улучшить сервис</div>
           <div class="rating-stars" id="ratingStars">
             <i class="fa-solid fa-star" onclick="setRating(1)"></i>
             <i class="fa-solid fa-star" onclick="setRating(2)"></i>
@@ -407,15 +409,72 @@
   <script>
     const RECHITSA_STREETS = [
       "пр-т Октября", "б-р Молодежный", "пл. Октября", "пл. Центральная", "пл. Победы",
-      "Светлогорское шоссе", "ул. Советская", "ул. Строителей", "ул. Интернациональная", 
-      "ул. Чапаева", "ул. Ленина", "ул. Советской Конституции", "ул. Нефтяников", "ул. Снежкова"
+      "Светлогорское шоссе", "ул. 10 лет Октября", "ул. 40 лет Октября", "ул. 50 лет БССР", 
+      "ул. 60 лет СССР", "ул. Амбулаторная", "ул. Багратиона", "ул. Белова", "ул. Белая", 
+      "ул. Белорусская", "ул. Беляева", "ул. Берёзовая", "ул. Блестящая", "ул. Бобруйская", 
+      "ул. Большая Садовая", "ул. Братская", "ул. Брестская", "ул. Брусилова", "ул. Василевичская", 
+      "ул. Ведричская", "ул. Виноградная", "ул. Витебская", "ул. Вишневая", "ул. Володарского", 
+      "ул. Восточная", "ул. Гагарина", "ул. Гастелло", "ул. Гоголя", "ул. Гомельская", "ул. Горького", 
+      "ул. Гражданская", "ул. Грицевца", "ул. Гродненская", "ул. Дачная", "ул. Декабристов", 
+      "ул. Дзержинского", "ул. Днепровская", "ул. Доватора", "ул. Дорожная", "ул. Достоевского", 
+      "ул. Дружбы", "ул. Елецкого", "ул. Есенина", "ул. Железнодорожная", "ул. Заводская", 
+      "ул. Залинейная", "ул. Западная", "ул. Заслонова", "ул. Зелёная", "ул. Знаменская", 
+      "ул. Зои Космодемьянской", "ул. Ивана Ковтунова", "ул. Ивановская", "ул. Ильича", 
+      "ул. Интернациональная", "ул. Калинина", "ул. Карбышева", "ул. Карла Маркса", 
+      "ул. Каштановая", "ул. Кирпичная", "ул. Кирова", "ул. Клары Цеткин", "ул. Кленовая", 
+      "ул. Клещёва", "ул. Кмитовская", "ул. Ковалева", "ул. Комарова", "ул. Коммунаров", 
+      "ул. Комсомольская", "ул. Конева", "ул. Королёва", "ул. Космонавтов", "ул. Котовского", 
+      "ул. Кошевого", "ул. Красноармейская", "ул. Краснознамённая", "ул. Криничная", "ул. Крупской", 
+      "ул. Куйбышева", "ул. Куликовская", "ул. Кутузова", "ул. Лазо", "ул. Ленина", "ул. Леонова", 
+      "ул. Лесная", "ул. Лермонтова", "ул. Линейная", "ул. Ломоносова", "ул. Луговая", 
+      "ул. Луначарского", "ул. Лучистая", "ул. Льнозаводская", "ул. М. Лынькова", "ул. Малая Садовая", 
+      "ул. Малиновая", "ул. Маресьева", "ул. Матросова", "ул. Маяковского", "ул. Мебельная", 
+      "ул. Мелиораторов", "ул. Менделеева", "ул. Милаградская", "ул. Мира", "ул. Минская", 
+      "ул. Могилевская", "ул. Молодежная", "ул. Мопровская", "ул. Набережная", "ул. Нахимова", 
+      "ул. Наумова", "ул. Некрасова", "ул. Нефтяников", "ул. Новая", "ул. Огородная", 
+      "ул. Октябрьская", "ул. Октябрьской Революции", "ул. Опятькина", "ул. Озёрная", 
+      "ул. Офицерская", "ул. Островского", "ул. Павлова", "ул. Панфилова", "ул. Парковая", 
+      "ул. Партизанская", "ул. Первомайская", "ул. Пескопольская", "ул. Пионерская", "ул. Победы", 
+      "ул. Полевая", "ул. Полесская", "ул. Пономарёва", "ул. Попова", "ул. Почтовая", 
+      "ул. Прибрежная", "ул. Привокзальная", "ул. Приднепровская", "ул. Приозерная", 
+      "ул. Пролетарская", "ул. Промышленная", "ул. Пугачева", "ул. Путевая", "ул. Пушкина", 
+      "ул. Рабочая", "ул. Ракетная", "ул. Редкова", "ул. Революционная", "ул. Репина", 
+      "ул. Речная", "ул. Рокоссовского", "ул. Розы Люксембург", "ул. Рябиновая", "ул. Садовая", 
+      "ул. Санаторная", "ул. Светлогорская", "ул. Свободы", "ул. Северная", "ул. Снежкова", 
+      "ул. Советская", "ул. Советской Конституции", "ул. Социалистическая", "ул. Спортивная", 
+      "ул. Степная", "ул. Строителей", "ул. Строительная", "ул. Суворова", "ул. Сыдько", 
+      "ул. Танковая", "ул. Терешковой", "ул. Тимирязева", "ул. Титова", "ул. Толстого", 
+      "ул. Трифонова", "ул. Трудовая", "ул. Тургенева", "ул. Турчинского", "ул. Урицкого", 
+      "ул. Урожайная", "ул. Ушакова", "ул. Фрунзе", "ул. Фруктовая", "ул. Фурманова", 
+      "ул. Хлусса", "ул. Цветочная", "ул. Чайкина", "ул. Чапаева", "ул. Чернышевского", 
+      "ул. Чехова", "ул. Чкалова", "ул. Шатилковская", "ул. Шевченко", "ул. Ширмы", 
+      "ул. Шишкина", "ул. Школьная", "ул. Щорса", "ул. Энергетиков", "ул. Южная", 
+      "ул. Якуба Коласа", "ул. Янки Купалы", "пер. 1-й Куликовский", "пер. 2-й Куликовский", 
+      "пер. 1-й Луговой", "пер. 2-й Луговой", "пер. 1-й Набережный", "пер. 2-й Набережный", 
+      "пер. 1-й Светлогорский", "пер. 2-й Светлогорский", "пер. 1-й Стадионный", "пер. 2-й Стадионный", 
+      "пер. 1-й переулок Горького", "пер. 2-й переулок Горького", "пер. 1-й переулок Карла Маркса", 
+      "пер. 2-й переулок Карла Маркса", "пер. 1-й переулок Кирова", "пер. 2-й переулок Кирова", 
+      "пер. 1-й переулок Фрунзе", "пер. 2-й переулок Фрунзе", "пер. Авиационный", "пер. Березовый", 
+      "пер. Больничный", "пер. Восточный", "пер. Вокзальный", "пер. Грибной", "пер. Заводской", 
+      "пер. Залинейный", "пер. Заслонова", "пер. Зеленый", "пер. Индустриальный", "пер. Калинина", 
+      "пер. Кирпичный", "пер. Короткий", "пер. Крупской", "пер. Лермонтова", "пер. Ленина", 
+      "пер. Лесной", "пер. Льнозаводской", "пер. Мира", "пер. Набережный", "пер. Огородный", 
+      "пер. Озёрный", "пер. Октябрьский", "пер. Островского", "пер. Офицерский", "пер. Парковый", 
+      "пер. Первомайский", "пер. Полевой", "пер. Пролетарский", "пер. Путевой", "пер. Пушкина", 
+      "пер. Речной", "пер. Садовый", "пер. Северный", "пер. Советский", "пер. Совхозный", 
+      "пер. Солнечный", "пер. Танковый", "пер. Толстого", "пер. Фурманова", "пер. Чехова", 
+      "пер. Шевченко", "пер. Школьный", "пр-д Коммунальный", "пр-д Строителей", "пр-д Нефтяников", 
+      "пр-д Энергетиков", "пр-д Промышленный", "пр-д Заводской", "пр-д Машиностроителей",
+      "Железнодорожный вокзал", "Автовокзал Речица", "ТРЦ Global Market", "ТЦ Евроопт", 
+      "ТЦ «Mojo»", "Городская больница", "Речицкий медколледж", "РЦОП", "Стадион Центральный", 
+      "Рынок «Центральный»", "Рынок «Славянский»", "Кинотеатр «Беларусь»", 
+      "Дворец культуры и техники «Нефтяник»", "Головные сооружения", "Памятник М. Довнар-Запольскому"
     ];
 
     let currentScreen = 1;
     let isInfoOnlyMode = false;
     let hasChildSeat = false;
     let isWeekend = false;
-    const ADMIN_DRIVER_ID = 1218398639; // Ваш ID
 
     let currentTariff = {
       name: "Эконом",
@@ -429,55 +488,21 @@
     let freeTimeRemaining = 120;
     let paidWaitingSeconds = 0;
     let activeInterval = null;
+    let isTransitWaiting = false;
+
     let scheduledDateTimeText = 'Ближайшее время';
 
     window.onload = function() {
       initDateInputs();
       checkIfWeekend();
       updateDisplays();
-      checkUserRoleAndLoadDriver();
-    };
-
-    // Автоматическая проверка роли через Telegram WebApp API
-    async function checkUserRoleAndLoadDriver() {
-      let telegramId = ADMIN_DRIVER_ID; // по умолчанию ваш ID для теста
       
-      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
-        const user = window.Telegram.WebApp.initDataUnsafe.user;
-        if (user && user.id) {
-          telegramId = user.id;
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.form-group')) {
+          document.querySelectorAll('.suggestions-list').forEach(el => el.style.display = 'none');
         }
-      }
-
-      // Если зашли вы (или другой водитель из вашего списка/базы), сразу загружаем водительский кабинет
-      if (telegramId === ADMIN_DRIVER_ID) {
-        loadDriverData(telegramId);
-      }
-    }
-
-    // Загрузка данных водителя с вашего Render-сервера
-    async function loadDriverData(telegramId) {
-      try {
-        const response = await fetch(`https://taxi-app-52w0.onrender.com/api/driver/${telegramId}`);
-        if (!response.ok) throw new Error("Водитель не найден в базе");
-        const driver = await response.json();
-        
-        document.getElementById('driver-info').innerHTML = `
-          <div class="summary-row"><span>Имя:</span><span>${driver.name}</span></div>
-          <div class="summary-row"><span>Телефон:</span><span>${driver.phone}</span></div>
-          <div class="summary-row"><span>Авто:</span><span>${driver.car_model}</span></div>
-          <div class="summary-row"><span>Гос. номер:</span><span>${driver.car_number}</span></div>
-          <div class="summary-row"><span>Рейтинг:</span><span style="color:var(--accent-yellow);">⭐ ${driver.rating}</span></div>
-        `;
-        
-        // Обновляем данные на экране найденного водителя для пассажиров тоже
-        document.getElementById('foundDriverName').innerText = driver.name;
-        document.getElementById('foundDriverRating').innerText = `★ ${driver.rating}`;
-        document.getElementById('foundDriverCar').innerText = `${driver.car_model} • ${driver.car_number}`;
-      } catch (error) {
-        document.getElementById('driver-info').innerHTML = `<p class="error">Ошибка сервера: ${error.message}</p>`;
-      }
-    }
+      });
+    };
 
     function startOrderProcess() {
       isInfoOnlyMode = false;
@@ -488,21 +513,33 @@
     function openTariffsInfoOnly() {
       isInfoOnlyMode = true;
       checkIfWeekend();
-      document.getElementById('screen5').classList.add('info-only-mode');
-      document.getElementById('btnTariffAction').innerText = 'В главное меню';
+      const screen5 = document.getElementById('screen5');
+      screen5.classList.add('info-only-mode');
+      
+      const btn = document.getElementById('btnTariffAction');
+      btn.innerText = 'В главное меню';
+      
       goTo(5);
     }
 
     function openTariffsSelection() {
       isInfoOnlyMode = false;
       checkIfWeekend();
-      document.getElementById('screen5').classList.remove('info-only-mode');
-      document.getElementById('btnTariffAction').innerText = 'Способ оплаты';
+      const screen5 = document.getElementById('screen5');
+      screen5.classList.remove('info-only-mode');
+      
+      const btn = document.getElementById('btnTariffAction');
+      btn.innerText = 'Способ оплаты';
+      
       goTo(5);
     }
 
     function handleTariffAction() {
-      if (isInfoOnlyMode) { goTo(1); } else { goTo(6); }
+      if (isInfoOnlyMode) {
+        goTo(1);
+      } else {
+        goTo(6);
+      }
     }
 
     function toggleChildSeat() {
@@ -512,27 +549,46 @@
     }
 
     function checkIfWeekend() {
-      const targetDate = new Date();
+      const tabNowActive = document.getElementById('tabNow').classList.contains('active');
+      let targetDate = new Date();
+
+      if (!tabNowActive) {
+        const dateVal = document.getElementById('pickupDate').value;
+        if (dateVal) {
+          targetDate = new Date(dateVal);
+        }
+      }
+
       const dayOfWeek = targetDate.getDay(); 
       isWeekend = (dayOfWeek === 5 || dayOfWeek === 6 || dayOfWeek === 0);
 
-      const alertBox = document.getElementById('weekendAlertBox');
-      if (alertBox) alertBox.style.display = isWeekend ? 'flex' : 'none';
-      const alertBoxTariff = document.getElementById('weekendAlertBoxTariff');
-      if (alertBoxTariff) alertBoxTariff.style.display = isWeekend ? 'flex' : 'none';
+      document.getElementById('weekendAlertBox').style.display = isWeekend ? 'flex' : 'none';
+      document.getElementById('weekendAlertBoxTariff').style.display = isWeekend ? 'flex' : 'none';
 
+      updateTariffPricesDisplay();
+    }
+
+    function updateTariffPricesDisplay() {
       const weekendBonus = isWeekend ? 1.00 : 0.00;
+
       document.getElementById('ecoBaseText').innerText = `Посадка: ${(3.00 + weekendBonus).toFixed(2)} BYN`;
       document.getElementById('comfBaseText').innerText = `Посадка: ${(4.00 + weekendBonus).toFixed(2)} BYN`;
     }
 
     function selectTariff(name, base, rate1, rate2, rate3, cardId) {
       if (isInfoOnlyMode) return;
+
       document.querySelectorAll('.tariff-card').forEach(c => c.classList.remove('active'));
       document.getElementById(cardId).classList.add('active');
       
       const weekendBonus = isWeekend ? 1.00 : 0.00;
-      currentTariff = { name, base: base + weekendBonus, rate1, rate2, rate3 };
+      currentTariff = { 
+        name, 
+        base: base + weekendBonus, 
+        rate1,
+        rate2,
+        rate3
+      };
       updateDisplays();
       calculateDriverPrice();
     }
@@ -542,7 +598,10 @@
       const list = document.getElementById(`suggestions${type}`);
       const val = input.value.trim();
 
-      const matches = val.length < 1 ? RECHITSA_STREETS.slice(0, 10) : RECHITSA_STREETS.filter(s => s.toLowerCase().includes(val.toLowerCase()));
+      const matches = val.length < 1 
+        ? RECHITSA_STREETS.slice(0, 30) 
+        : RECHITSA_STREETS.filter(s => s.toLowerCase().includes(val.toLowerCase()));
+      
       list.innerHTML = '';
 
       if (matches.length > 0) {
@@ -551,10 +610,8 @@
           item.className = 'suggestion-item';
           item.innerHTML = `<span><i class="fa-solid fa-location-dot" style="margin-right:8px; color:var(--accent-yellow);"></i>${street}</span>`;
           item.onmousedown = function(e) {
-            e.preventDefault();
-            input.value = `${street}, `;
-            list.style.display = 'none';
-            updateDisplays();
+            e.preventDefault(); 
+            selectStreetSuggestion(type, street);
           };
           list.appendChild(item);
         });
@@ -562,6 +619,15 @@
       } else {
         list.style.display = 'none';
       }
+    }
+
+    function selectStreetSuggestion(type, street) {
+      const input = document.getElementById(`input${type}`);
+      input.value = `${street}, `;
+      input.focus();
+
+      document.getElementById(`suggestions${type}`).style.display = 'none';
+      updateDisplays();
     }
 
     function calculateDriverPrice() {
@@ -596,32 +662,90 @@
       document.getElementById('sumDateTime').innerText = scheduledDateTimeText;
       document.getElementById('sumTariff').innerText = currentTariff.name;
       
-      document.getElementById('sumWeekendRow').style.display = isWeekend ? 'flex' : 'none';
-      document.getElementById('sumChildSeatRow').style.display = hasChildSeat ? 'flex' : 'none';
+      const sumWeekendRow = document.getElementById('sumWeekendRow');
+      if (sumWeekendRow) sumWeekendRow.style.display = isWeekend ? 'flex' : 'none';
+
+      const childSeatRow = document.getElementById('sumChildSeatRow');
+      if (childSeatRow) childSeatRow.style.display = hasChildSeat ? 'flex' : 'none';
+
+      let rateDetails = `Посадка ${currentTariff.base.toFixed(2)} | 1-5км: ${currentTariff.rate1} | 5-10км: ${currentTariff.rate2} | >10км: ${currentTariff.rate3} BYN/км`;
+      if (isWeekend) rateDetails += ' (вкл. выходной)';
+      if (hasChildSeat) rateDetails += ' + 1.00 BYN (кресло)';
+      document.getElementById('sumRates').innerText = rateDetails;
+
+      document.getElementById('clientScheduledDisplay').innerText = scheduledDateTimeText;
+      
+      const clientWeekendDisplay = document.getElementById('clientWeekendDisplay');
+      if (clientWeekendDisplay) clientWeekendDisplay.style.display = isWeekend ? 'flex' : 'none';
+
+      const clientChildSeatDisplay = document.getElementById('clientChildSeatDisplay');
+      if (clientChildSeatDisplay) clientChildSeatDisplay.style.display = hasChildSeat ? 'flex' : 'none';
+
       document.getElementById('driverOrderAddresses').innerText = `${addressA} → ${addressB}`;
       document.getElementById('finalRouteDisplay').innerText = `${addressA} → ${addressB}`;
+      document.getElementById('driverScheduledTime').innerText = `Подача: ${scheduledDateTimeText}`;
+      
+      const driverWeekendBadge = document.getElementById('driverWeekendBadge');
+      if (driverWeekendBadge) driverWeekendBadge.style.display = isWeekend ? 'block' : 'none';
+
+      const driverBadge = document.getElementById('driverChildSeatBadge');
+      if (driverBadge) driverBadge.style.display = hasChildSeat ? 'block' : 'none';
     }
 
     function initDateInputs() {
       const now = new Date();
       const dateInput = document.getElementById('pickupDate');
       const timeInput = document.getElementById('pickupTime');
+
       dateInput.value = now.toISOString().split('T')[0];
+      dateInput.min = dateInput.value;
       timeInput.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
     }
 
     function setOrderTimeType(type) {
-      document.getElementById('tabNow').classList.toggle('active', type === 'now');
-      document.getElementById('tabFuture').classList.toggle('active', type === 'future');
-      document.getElementById('pickupDate').disabled = (type === 'now');
-      document.getElementById('pickupTime').disabled = (type === 'now');
-      scheduledDateTimeText = (type === 'now') ? 'Ближайшее время' : 'На дату';
+      const tabNow = document.getElementById('tabNow');
+      const tabFuture = document.getElementById('tabFuture');
+      const dateInput = document.getElementById('pickupDate');
+      const timeInput = document.getElementById('pickupTime');
+
+      if (type === 'now') {
+        tabNow.classList.add('active');
+        tabFuture.classList.remove('active');
+        dateInput.disabled = true;
+        timeInput.disabled = true;
+        scheduledDateTimeText = 'Ближайшее время';
+      } else {
+        tabFuture.classList.add('active');
+        tabNow.classList.remove('active');
+        dateInput.disabled = false;
+        timeInput.disabled = false;
+        updateScheduledTime();
+      }
+      checkIfWeekend();
+      updateDisplays();
+    }
+
+    function updateScheduledTime() {
+      const dateVal = document.getElementById('pickupDate').value;
+      const timeVal = document.getElementById('pickupTime').value;
+
+      if (dateVal && timeVal) {
+        const p = dateVal.split('-');
+        scheduledDateTimeText = `${p[2]}.${p[1]}.${p[0]} в ${timeVal}`;
+      } else {
+        scheduledDateTimeText = 'Укажите время';
+      }
+      checkIfWeekend();
       updateDisplays();
     }
 
     function openYandexMaps(pointType) {
-      const address = pointType === 'A' ? document.getElementById('inputA').value : document.getElementById('inputB').value;
+      const address = pointType === 'A' 
+        ? document.getElementById('inputA').value 
+        : document.getElementById('inputB').value;
+        
       const url = `https://yandex.by/maps/?rtext=~Речица, ${encodeURIComponent(address)}&rtt=auto`;
+
       if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
         window.Telegram.WebApp.openLink(url);
       } else {
@@ -636,6 +760,7 @@
       document.getElementById('clientStatusBadge').className = 'status-badge status-waiting';
       document.getElementById('clientStatusBadge').innerText = 'Водитель на месте';
       document.getElementById('clientStatusText').innerText = 'Ожидание пассажира';
+
       runWaitingTimer();
     }
 
@@ -650,9 +775,15 @@
         } else {
           paidWaitingSeconds++;
           document.getElementById('timerLabel').innerText = 'Платный простой (0.50 BYN/мин)';
+          document.getElementById('timerLabel').style.color = "var(--red)";
+          document.getElementById('driverTimerDisplay').style.color = "var(--red)";
           document.getElementById('driverTimerDisplay').innerText = formatTime(paidWaitingSeconds);
           document.getElementById('clientTimerDisplay').innerText = formatTime(paidWaitingSeconds);
+
           totalWaitFee = Math.ceil(paidWaitingSeconds / 60) * 0.50;
+          document.getElementById('timerSubLabel').innerText = `Доплата за простой: ${totalWaitFee.toFixed(2)} BYN`;
+          document.getElementById('timerSubLabel').style.color = "var(--red)";
+          document.getElementById('clientWaitingTitle').innerText = "Платный простой";
           calculateDriverPrice();
         }
       }, 1000);
@@ -661,7 +792,9 @@
     function startTripAndSaveRemainingTime() {
       clearInterval(activeInterval);
       document.getElementById('btnStartTrip').style.display = 'none';
+      document.getElementById('btnTransitWaiting').style.display = 'flex';
       document.getElementById('btnFinishTrip').style.display = 'flex';
+      
       document.getElementById('btnNavA').style.display = 'none';
       document.getElementById('btnNavB').style.display = 'flex';
 
@@ -669,7 +802,36 @@
       document.getElementById('clientStatusBadge').className = 'status-badge status-moving';
       document.getElementById('clientStatusBadge').innerText = 'В пути';
       document.getElementById('clientStatusText').innerText = 'Поездка началась';
+
+      document.getElementById('timerLabel').innerText = "Запас на остановки";
+      document.getElementById('driverTimerDisplay').innerText = formatTime(freeTimeRemaining);
+      document.getElementById('driverTimerDisplay').style.color = "var(--accent-yellow)";
+      document.getElementById('timerSubLabel').innerText = `Сохранено: ${freeTimeRemaining} сек`;
+
       openYandexMaps('B');
+    }
+
+    function toggleTransitWaiting() {
+      const btn = document.getElementById('btnTransitWaiting');
+      if (!isTransitWaiting) {
+        isTransitWaiting = true;
+        btn.innerHTML = '<i class="fa-solid fa-play"></i> Продолжить';
+        btn.style.background = 'var(--green)';
+        document.getElementById('clientWaitingBox').style.display = 'block';
+        document.getElementById('clientStatusBadge').className = 'status-badge status-waiting';
+        document.getElementById('clientStatusBadge').innerText = 'Остановка';
+        document.getElementById('clientStatusText').innerText = 'Ожидание у точки';
+        runWaitingTimer();
+      } else {
+        isTransitWaiting = false;
+        clearInterval(activeInterval);
+        btn.innerHTML = '<i class="fa-solid fa-pause"></i> Остановка в пути';
+        btn.style.background = 'var(--orange)';
+        document.getElementById('clientWaitingBox').style.display = 'none';
+        document.getElementById('clientStatusBadge').className = 'status-badge status-moving';
+        document.getElementById('clientStatusBadge').innerText = 'В пути';
+        document.getElementById('clientStatusText').innerText = 'Поездка продолжается';
+      }
     }
 
     function finishTrip() {
@@ -678,8 +840,13 @@
     }
 
     function setRating(starsCount) {
-      document.querySelectorAll('#ratingStars .fa-star').forEach((star, index) => {
-        star.classList.toggle('active', index < starsCount);
+      const stars = document.querySelectorAll('#ratingStars .fa-star');
+      stars.forEach((star, index) => {
+        if (index < starsCount) {
+          star.classList.add('active');
+        } else {
+          star.classList.remove('active');
+        }
       });
     }
 
@@ -693,11 +860,16 @@
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(`screen${num}`).classList.add('active');
       currentScreen = num;
-      const titles = { 1: "Главная", 2: "Откуда", 3: "Куда", 4: "Время", 5: "Тарифы", 6: "Оплата", 7: "Проверка", 8: "Поиск", 9: "Водитель", 10: "Статус", 12: "Кабинет Водителя", 13: "Итог" };
+
+      const titles = {
+        1: "Главная", 2: "Откуда", 3: "Куда", 4: "Время", 
+        5: "Тарифы", 6: "Оплата", 7: "Проверка", 8: "Поиск", 
+        9: "Водитель", 10: "Статус", 12: "Водитель", 13: "Итог поездки"
+      };
       document.getElementById('screenTitle').innerText = titles[num] || "Такси";
     }
 
     function goBack() { if (currentScreen > 1) goTo(currentScreen - 1); }
   </script>
 </body>
-          </html>
+</html>
