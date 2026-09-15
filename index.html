@@ -21,7 +21,7 @@
         async function loadDriverData() {
             const telegramId = 123456789; 
             try {
-                const response = await fetch(`https://taxi-rechytsa-api.onrender.com/api/driver/${telegramId}`);
+                const response = await fetch(`https://taxi-app-52w0.onrender.com/api/driver/${telegramId}`);
                 if (!response.ok) throw new Error("Водитель не найден в базе");
                 const driver = await response.json();
                 document.getElementById('driver-info').innerHTML = `
