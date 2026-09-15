@@ -284,15 +284,15 @@
             <span>Стоимость:</span><span style="color:var(--accent-yellow); font-weight:700;">По счетчику водителя</span>
           </div>
         </div>
-        <button class="btn-primary" onclick="goTo(8)">Заказать такси</button>
+        <!-- ИЗМЕНЕНО: теперь кнопка вызывает функцию создания заказа и поиска водителя -->
+        <button class="btn-primary" onclick="createOrderAndSearch()">Заказать такси</button>
       </div>
 
       <!-- ЭКРАН 8: Поиск -->
       <div class="screen" id="screen8" style="text-align:center;">
         <div class="search-radar"><i class="fa-solid fa-taxi" style="font-size:36px; color:var(--accent-yellow);"></i></div>
         <h3>Ищем ближайшее авто...</h3>
-        <p style="color:var(--text-muted); font-size:12px; margin-top:8px;">Обычно это занимает 1-2 минуты</p>
-        <button class="btn-primary" style="background:transparent; border:1px solid var(--card-border); color:#fff; margin-top:30px;" onclick="goTo(9)">Водитель найден</button>
+        <p style="color:var(--text-muted); font-size:12px; margin-top:8px;">Перейдите во вкладку «Режим Водителя», чтобы принять заказ!</p>
       </div>
 
       <!-- ЭКРАН 9: Водитель найден -->
@@ -329,9 +329,9 @@
       <!-- ЭКРАН 12: Водитель -->
       <div class="screen" id="screen12">
         <div class="summary-card" style="margin-bottom:8px;">
-          <div style="font-size: 11px; color: var(--text-muted);">Активный заказ #1042</div>
-          <div style="font-size: 14px; font-weight: 700; margin-top:2px;" id="driverOrderAddresses">Советская → Строителей</div>
-          <div style="font-size: 12px; color: var(--accent-yellow); margin-top:4px;" id="driverScheduledTime">Подача: Ближайшее время</div>
+          <div style="font-size: 11px; color: var(--text-muted);" id="driverOrderIdLabel">Активный заказ: нет заказов</div>
+          <div style="font-size: 14px; font-weight: 700; margin-top:2px;" id="driverOrderAddresses">Ожидание нового заказа...</div>
+          <div style="font-size: 12px; color: var(--accent-yellow); margin-top:4px;" id="driverScheduledTime">Подача: -</div>
           <div style="font-size: 12px; color: var(--accent-yellow); margin-top:2px; display:none;" id="driverWeekendBadge"><i class="fa-solid fa-calendar-star"></i> Тариф выходного дня (+1.00 BYN)</div>
           <div style="font-size: 12px; color: var(--accent-yellow); margin-top:2px; display:none;" id="driverChildSeatBadge"><i class="fa-solid fa-child-reaching"></i> С детским креслом (+1.00 BYN)</div>
           
@@ -491,11 +491,13 @@
     let isTransitWaiting = false;
 
     let scheduledDateTimeText = 'Ближайшее время';
+    let clientCheckInterval = null;
 
     window.onload = function() {
       initDateInputs();
       checkIfWeekend();
       updateDisplays();
+      startDriverListener(); // Запускаем слушатель для водителя
       
       document.addEventListener('click', function(e) {
         if (!e.target.closest('.form-group')) {
@@ -739,6 +741,56 @@
       updateDisplays();
     }
 
+    // --- НОВАЯ ЛОГИКА СВЯЗИ ЗАКАЗА И ВОДИТЕЛЯ ЧЕРЕЗ LOCALSTORAGE ---
+    function createOrderAndSearch() {
+      const order = {
+        id: Math.floor(1000 + Math.random() * 9000),
+        addressA: document.getElementById('inputA').value,
+        addressB: document.getElementById('inputB').value,
+        tariff: currentTariff.name,
+        scheduled: scheduledDateTimeText,
+        isWeekend: isWeekend,
+        childSeat: hasChildSeat,
+        status: 'searching' // Статус поиска
+      };
+
+      localStorage.setItem('rechitsa_taxi_order', JSON.stringify(order));
+      goTo(8); // Переходим на экран поиска (Экран 8)
+      startClientWaitingCheck();
+    }
+
+    function startClientWaitingCheck() {
+      clearInterval(clientCheckInterval);
+      clientCheckInterval = setInterval(() => {
+        const raw = localStorage.getItem('rechitsa_taxi_order');
+        if (raw) {
+          const order = JSON.parse(raw);
+          if (order.status === 'accepted') {
+            clearInterval(clientCheckInterval);
+            goTo(9); // Водитель принял! Переходим на экран «Водитель найден»
+          }
+        }
+      }, 1500);
+    }
+
+    function startDriverListener() {
+      setInterval(() => {
+        const raw = localStorage.getItem('rechitsa_taxi_order');
+        if (raw) {
+          const order = JSON.parse(raw);
+          if (order.status === 'searching') {
+            // Заполняем данные для водителя
+            document.getElementById('driverOrderIdLabel').innerText = `Активный заказ #${order.id}`;
+            document.getElementById('driverOrderAddresses').innerText = `${order.addressA} → ${order.addressB}`;
+            document.getElementById('driverScheduledTime').innerText = `Подача: ${order.scheduled}`;
+            document.getElementById('driverWeekendBadge').style.display = order.isWeekend ? 'block' : 'none';
+            document.getElementById('driverChildSeatBadge').style.display = order.childSeat ? 'block' : 'none';
+          }
+        }
+      }, 1500);
+    }
+    // -------------------------------------------------------------
+
     function openYandexMaps(pointType) {
       const address = pointType === 'A' 
         ? document.getElementById('inputA').value 
@@ -754,6 +806,14 @@
     }
 
     function startPickupWaiting() {
+      // Обновляем статус в localStorage, чтобы пассажир тоже перешел на экран поиска водителя
+      const raw = localStorage.getItem('rechitsa_taxi_order');
+      if (raw) {
+        let order = JSON.parse(raw);
+        order.status = 'accepted';
+        localStorage.setItem('rechitsa_taxi_order', JSON.stringify(order));
+      }
+
       document.getElementById('btnArrived').style.display = 'none';
       document.getElementById('btnStartTrip').style.display = 'flex';
       document.getElementById('clientWaitingBox').style.display = 'block';
