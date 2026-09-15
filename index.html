@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Такси Речица</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f9; margin: 0; padding: 20px; text-align: center; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
+        h2 { color: #333; }
+        .info { font-size: 16px; margin: 10px 0; color: #555; }
+        .error { color: #d9534f; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Кабинет водителя</h2>
+        <div id="driver-info">Загрузка данных водителя...</div>
+    </div>
+    <script>
+        async function loadDriverData() {
+            const telegramId = 123456789; 
+            try {
+                const response = await fetch(`https://taxi-rechytsa-api.onrender.com/api/driver/${telegramId}`);
+                if (!response.ok) throw new Error("Водитель не найден в базе");
+                const driver = await response.json();
+                document.getElementById('driver-info').innerHTML = `
+                    <p class="info"><strong>Имя:</strong> ${driver.name}</p>
+                    <p class="info"><strong>Телефон:</strong> ${driver.phone}</p>
+                    <p class="info"><strong>Авто:</strong> ${driver.car_model}</p>
+                    <p class="info"><strong>Гос. номер:</strong> ${driver.car_number}</p>
+                    <p class="info"><strong>Рейтинг:</strong> ⭐ ${driver.rating}</p>
+                `;
+            } catch (error) {
+                document.getElementById('driver-info').innerHTML = `<p class="error">Ошибка: ${error.message}</p>`;
+            }
+        }
+        loadDriverData();
+    </script>
+</body>
+</html>
